@@ -25,10 +25,12 @@ def index():
 @app.route("/add", methods=["POST"])
 def add():
     name = request.form["name"]
+    brand = request.form["brand"]
     amount = float(request.form["amount"])
+    quantity = int(request.form["quantity"])
 
     data = load_data()
-    data.append({"name": name, "amount": amount})
+    data.append({"name": name, "amount": amount, "brand" : brand, "quantity": quantity})
     save_data(data)
 
     return redirect("/list")

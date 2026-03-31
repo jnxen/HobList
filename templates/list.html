@@ -8,7 +8,9 @@
 
     <ul>
       {% for item in items %}
-      <li>{{ item.name }} - {{ item.amount }}</li>
+      <li>
+        {{ item.name }} - {{item.brand}} - {{ item.amount }} - {{item.quantity}}
+      </li>
       {% endfor %}
     </ul>
 
