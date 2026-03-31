@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Expenses</title>
+  </head>
+  <body>
+    <h1>Expense List</h1>
+
+    <ul>
+      {% for item in items %}
+      <li>{{ item.name }} - {{ item.amount }}</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Total: {{ total }}</h2>
+
+    <a href="/">Add More</a>
+  </body>
+</html>
