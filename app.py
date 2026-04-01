@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import json
+import uuid
 
 app = Flask(__name__)
 
@@ -30,9 +31,17 @@ def add():
     quantity = int(request.form["quantity"])
 
     data = load_data()
-    data.append({"name": name, "amount": amount, "brand" : brand, "quantity": quantity})
+    data.append({"item_id":str(uuid.uuid4()), "name": name, "amount": amount, "brand" : brand, "quantity": quantity})
     save_data(data)
 
+    return redirect("/list")
+
+#delete function
+@app.route("/delete/<item_id>", methods = ["POST"])
+def delete_item(item_id):
+    data = load_data()
+    data = [item for item in data if item["item_id"] != item_id]
+    save_data(data)
     return redirect("/list")
 
 # Show list

@@ -10,6 +10,13 @@
       {% for item in items %}
       <li>
         {{ item.name }} - {{item.brand}} - {{ item.amount }} - {{item.quantity}}
+        <form
+          action="/delete/{{ item['item_id']}}"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit">Delete</button>
+        </form>
       </li>
       {% endfor %}
     </ul>
