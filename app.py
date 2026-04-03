@@ -35,12 +35,14 @@ def index():
 def add():
     name = request.form["name"]
     brand = request.form["brand"]
-    amount = float(request.form["amount"])
+    price = float(request.form["price"])
     quantity = int(request.form["quantity"])
+
+    amount = price * quantity
 
     data = load_data()
     data.append({"item_id": str(uuid.uuid4()), "name": name,
-                "amount": amount, "brand": brand, "quantity": quantity})
+                 "brand": brand, "price": price, "quantity": quantity, "amount": amount})
     save_data(data)
 
     return redirect("/list")
@@ -69,6 +71,36 @@ def list_items():
     total = sum(item["amount"] for item in data)
 
     return render_template("list.html", items=data, total=total)
+
+
+@app.route("/edit/<item_id>")
+def edit_item(item_id):
+    data = load_data()
+    item_to_edit = None
+    for item in data:
+        if item["item_id"] == item_id:
+            item_to_edit = item
+            break
+    return render_template("edit.html", item=item_to_edit)
+
+
+@app.route("/update/<item_id>", methods=["POST"])
+def update_item(item_id):
+    data = load_data()
+    for item in data:
+        if item['item_id'] == item_id:
+            item['name'] = request.form['name']
+            item['brand'] = request.form['brand']
+            quantity = int(request.form['quantity'])
+            price = float(request.form['price'])
+
+            item['quantity'] = quantity
+            item['price'] = price
+            item['amount'] = price * quantity
+            break
+
+    save_data(data)
+    return redirect("/list")
 
 
 if __name__ == "__main__":

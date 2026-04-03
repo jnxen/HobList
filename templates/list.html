@@ -2,29 +2,210 @@
 <html>
   <head>
     <title>Expenses</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f5f5f3;
+        padding: 3rem 1rem;
+        color: #1a1a1a;
+      }
+
+      .wrap {
+        max-width: 580px;
+        margin: 0 auto;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+      .top h1 {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .top a {
+        font-size: 13px;
+        color: #555;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 6px 12px;
+      }
+      .top a:hover {
+        background: #efefed;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 1.5rem;
+      }
+      .stat {
+        background: #efefed;
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .stat-label {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+      }
+      .stat-value {
+        font-size: 20px;
+        font-weight: 600;
+      }
+
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+        border: 1px solid #e5e5e3;
+        border-radius: 8px;
+        padding: 11px 14px;
+      }
+      .row:hover {
+        border-color: #ccc;
+      }
+
+      .row-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .row-name {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .row-meta {
+        font-size: 12px;
+        color: #888;
+      }
+
+      .row-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .row-amount {
+        font-size: 14px;
+        font-weight: 500;
+        min-width: 60px;
+        text-align: right;
+      }
+      .divider {
+        width: 1px;
+        height: 16px;
+        background: #e5e5e3;
+      }
+
+      .btn-action {
+        font-size: 12px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        background: transparent;
+        color: #888;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn-action:hover {
+        background: #f5f5f3;
+        color: #1a1a1a;
+      }
+      .btn-action.danger:hover {
+        background: #fff0f0;
+        color: #c0392b;
+        border-color: #f5c6c6;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+      }
+      .btn-clear-all {
+        font-size: 13px;
+        padding: 7px 14px;
+        border-radius: 8px;
+        border: 1px solid #f5c6c6;
+        background: transparent;
+        color: #c0392b;
+        cursor: pointer;
+      }
+      .btn-clear-all:hover {
+        background: #fff0f0;
+      }
+    </style>
   </head>
   <body>
-    <h1>Expense List</h1>
+    <div class="wrap">
+      <div class="top">
+        <h1>Expense list</h1>
+        <a href="/">+ Add expense</a>
+      </div>
 
-    <ul>
-      {% for item in items %}
-      <li>
-        {{ item.name }} - {{item.brand}} - {{ item.amount }} - {{item.quantity}}
-        <form
-          action="/delete/{{ item['item_id']}}"
-          method="POST"
-          style="display: inline"
-        >
-          <button type="submit">Clear</button>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Items</div>
+          <div class="stat-value">{{ items | length }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total qty</div>
+          <div class="stat-value">{{ items | sum(attribute='quantity') }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Total</div>
+          <div class="stat-value">₱{{ total }}</div>
+        </div>
+      </div>
+
+      <div class="list">
+        {% for item in items %}
+        <div class="row">
+          <div class="row-left">
+            <span class="row-name">{{ item.name }}</span>
+            <span class="row-meta"
+              >{{ item.brand }} &nbsp;·&nbsp; qty {{ item.quantity }}</span
+            >
+          </div>
+          <div class="row-right">
+            <span class="row-amount">₱{{ item.amount }}</span>
+            <div class="divider"></div>
+            <form action="/edit/{{ item['item_id'] }}">
+              <button type="submit" class="btn-action">Edit</button>
+            </form>
+            <form action="/delete/{{ item['item_id'] }}" method="POST">
+              <button type="submit" class="btn-action danger">Clear</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="footer">
+        <form action="/clear" method="POST">
+          <button type="submit" class="btn-clear-all">
+            Clear all expenses
+          </button>
         </form>
-      </li>
-      {% endfor %}
-    </ul>
-
-    <h2>Total: {{ total }}</h2>
-    <form action="/clear" method="POST">
-      <button type="submit">clear all</button>
-    </form>
-    <a href="/">Add More</a>
+      </div>
+    </div>
   </body>
 </html>
