@@ -93,10 +93,14 @@ def update_item(item_id):
             item['brand'] = request.form['brand']
             quantity = int(request.form['quantity'])
             price = float(request.form['price'])
-
-            item['quantity'] = quantity
             item['price'] = price
-            item['amount'] = price * quantity
+            if quantity > 0:
+                item['quantity'] += quantity
+                item['amount'] = price * item['quantity']
+            else:
+                item['quantity'] -= abs(quantity)
+                item['amount'] = price * item["quantity"]
+
             break
 
     save_data(data)
