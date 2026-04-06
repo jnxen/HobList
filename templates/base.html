@@ -1,0 +1,31 @@
+<!-- templates/base.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DieCast Feed</title>
+    <!-- Link to our CSS file. url_for() is Flask's way of finding static files safely -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="/" class="logo">🚗 DieCast Hub</a>
+        <div class="nav-links">
+          <a href="#">Profile</a>
+          <a href="/list">My Die-Carts</a>
+          <a href="#">Login</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <!-- Every child template fills this "block" -->
+    <main class="main-content">{% block content %}{% endblock %}</main>
+  </body>
+</html>

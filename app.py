@@ -21,14 +21,48 @@ def save_data(data):
     with open("data.json", "w") as f:
         json.dump(data, f)
 
+
 # Home page (form)
+posts = [
+    {
+        "user": "Carlos M.",
+        "caption": "Just picked up this 1:64 Hot Wheels Ferrari F40! The detail on the wheels is insane 🔥",
+        "image": "https://via.placeholder.com/500x300",
+        "likes": 24,
+        "time": "2 hours ago"
+    },
+    {
+        "user": "Ana R.",
+        "caption": "My 1:18 scale Lamborghini Countach finally arrived from Japan. Worth the wait!",
+        "image": "https://via.placeholder.com/500x300",
+        "likes": 47,
+        "time": "5 hours ago"
+    },
+    {
+        "user": "Marco D.",
+        "caption": "No image today, just sharing — found a vintage Matchbox Superfast at a flea market for $2!",
+        "image": None,   # No image for this post
+        "likes": 15,
+        "time": "Yesterday"
+    },
+]
 
 
 @app.route("/")
-def index():
-    return render_template("index.html")
+def landing():
+    return render_template("index.html", posts=posts)
 
 # Add item
+
+
+@app.route("/add_items")
+def add_items():
+    return render_template("add_to_cart.html")
+
+
+@app.route("/feed")
+def feed():
+    return render_template("feed.html", posts=posts)
 
 
 @app.route("/add", methods=["POST"])

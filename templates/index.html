@@ -1,156 +1,521 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>Add Expense</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DieCast Hub — Landing</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      * {
-        box-sizing: border-box;
+      *,
+      *::before,
+      *::after {
         margin: 0;
         padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --red: #e63946;
+        --dark: #0d0d0d;
+        --card: #161616;
+        --muted: #555;
+        --white: #f5f5f5;
+        --accent: #ffd60a;
+      }
+
+      html,
+      body {
+        height: 100%;
       }
 
       body {
-        font-family: system-ui, sans-serif;
-        background: #f5f5f3;
+        background-color: var(--dark);
+        color: var(--white);
+        font-family: "DM Sans", sans-serif;
+        overflow: hidden;
+        cursor: none;
+      }
+
+      /* ── Custom cursor ── */
+      .cursor {
+        position: fixed;
+        width: 12px;
+        height: 12px;
+        background: var(--red);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          transform 0.1s ease,
+          width 0.2s ease,
+          height 0.2s ease;
+      }
+      .cursor-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border: 1.5px solid rgba(230, 57, 70, 0.5);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition:
+          transform 0.12s ease,
+          border-color 0.2s;
+      }
+
+      /* ── Grid texture overlay ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+          );
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── Red spotlight ── */
+      body::after {
+        content: "";
+        position: fixed;
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(
+          circle,
+          rgba(230, 57, 70, 0.12) 0%,
+          transparent 70%
+        );
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── Floating diecast silhouettes (decorative) ── */
+      .silhouette {
+        position: fixed;
+        opacity: 0.04;
+        font-size: 160px;
+        pointer-events: none;
+        z-index: 0;
+        animation: drift 18s ease-in-out infinite;
+      }
+      .silhouette:nth-child(1) {
+        top: 5%;
+        left: -60px;
+        animation-delay: 0s;
+      }
+      .silhouette:nth-child(2) {
+        bottom: 5%;
+        right: -40px;
+        animation-delay: -9s;
+        font-size: 200px;
+      }
+
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(-5deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(5deg);
+        }
+      }
+
+      /* ── Ticker strip at the top ── */
+      .ticker-wrap {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 36px;
+        background: var(--red);
+        overflow: hidden;
+        z-index: 10;
         display: flex;
-        justify-content: center;
-        padding: 3rem 1rem;
-        color: #1a1a1a;
+        align-items: center;
+      }
+      .ticker-track {
+        display: flex;
+        gap: 80px;
+        white-space: nowrap;
+        animation: ticker 22s linear infinite;
+      }
+      .ticker-track span {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.12em;
+        color: var(--dark);
+      }
+      .dot {
+        color: var(--accent);
+        margin: 0 8px;
       }
 
-      .card {
-        background: #fff;
-        border: 1px solid #e5e5e3;
-        border-radius: 12px;
-        padding: 2rem;
-        width: 100%;
-        max-width: 420px;
+      @keyframes ticker {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
       }
 
-      h1 {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-      }
-      .subtitle {
-        font-size: 13px;
-        color: #888;
-        margin-bottom: 1.75rem;
-      }
-
-      .field {
+      /* ── Main stage ── */
+      .stage {
+        position: relative;
+        height: 100vh;
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        margin-bottom: 1rem;
-      }
-      label {
-        font-size: 13px;
-        font-weight: 500;
-        color: #555;
-      }
-
-      input {
-        width: 100%;
-        padding: 9px 12px;
-        font-size: 14px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        outline: none;
-        transition: border-color 0.15s;
-      }
-      input:focus {
-        border-color: #888;
-      }
-
-      .row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      button {
-        width: 100%;
-        margin-top: 0.5rem;
-        padding: 10px;
-        font-size: 15px;
-        font-weight: 500;
-        background: #1a1a1a;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #333;
-      }
-
-      .footer {
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        padding-top: 36px;
         text-align: center;
-        margin-top: 1.25rem;
-        font-size: 13px;
-        color: #888;
+        gap: 0;
       }
-      .footer a {
-        color: #1a1a1a;
-        text-underline-offset: 3px;
+
+      /* ── Eyebrow label ── */
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 0.2s forwards;
+      }
+      .eyebrow-line {
+        width: 40px;
+        height: 1px;
+        background: var(--red);
+      }
+
+      /* ── Main headline ── */
+      .headline {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(72px, 13vw, 160px);
+        line-height: 0.92;
+        letter-spacing: 0.02em;
+        color: var(--white);
+        opacity: 0;
+        animation: fadeUp 0.7s ease 0.35s forwards;
+      }
+      .headline span {
+        color: var(--red);
+        display: block;
+      }
+
+      /* ── Sub-headline ── */
+      .sub {
+        margin-top: 24px;
+        font-size: 15px;
+        font-weight: 300;
+        color: #888;
+        max-width: 380px;
+        line-height: 1.7;
+        opacity: 0;
+        animation: fadeUp 0.7s ease 0.5s forwards;
+      }
+      .sub strong {
+        color: var(--white);
+        font-weight: 500;
+      }
+
+      /* ── CTA button ── */
+      .cta-wrap {
+        margin-top: 48px;
+        opacity: 0;
+        animation: fadeUp 0.7s ease 0.65s forwards;
+      }
+
+      .btn-start {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        background: var(--red);
+        color: var(--white);
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 20px;
+        letter-spacing: 0.15em;
+        padding: 16px 44px;
+        border: none;
+        cursor: none;
+        text-decoration: none;
+        clip-path: polygon(
+          0 0,
+          calc(100% - 12px) 0,
+          100% 12px,
+          100% 100%,
+          12px 100%,
+          0 calc(100% - 12px)
+        );
+        transition:
+          background 0.2s ease,
+          transform 0.15s ease;
+        overflow: hidden;
+      }
+
+      .btn-start::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.12) 50%,
+          transparent 100%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.5s ease;
+      }
+
+      .btn-start:hover::before {
+        transform: translateX(100%);
+      }
+
+      .btn-start:hover {
+        background: #c1121f;
+        transform: translateY(-2px);
+      }
+
+      .btn-arrow {
+        width: 22px;
+        height: 22px;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        transition: transform 0.2s ease;
+      }
+
+      .btn-start:hover .btn-arrow {
+        transform: translateX(4px);
+      }
+
+      /* ── Bottom stat bar ── */
+      .stats {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background: var(--card);
+        border-top: 1px solid #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+        z-index: 10;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 1s forwards;
+      }
+
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .stat-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 20px;
+        color: var(--red);
+        letter-spacing: 0.05em;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .stat-divider {
+        width: 1px;
+        height: 24px;
+        background: #2a2a2a;
+      }
+
+      /* ── Logo top-left ── */
+      .logo-mark {
+        position: fixed;
+        top: 52px;
+        left: 28px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.15em;
+        color: var(--white);
+        z-index: 10;
+        text-decoration: none;
+        opacity: 0;
+        animation: fadeIn 0.5s ease 0.1s forwards;
+      }
+      .logo-mark em {
+        color: var(--red);
+        font-style: normal;
+      }
+
+      /* ── Animations ── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>Add expense</h1>
-      <p class="subtitle">Track a new item to your expense list</p>
+    <!-- Custom cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
 
-      <form action="/add" method="POST">
-        <div class="field">
-          <label for="name">Item name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="e.g. Coffee"
-            required
-          />
-        </div>
-        <div class="field">
-          <label for="brand">Brand</label>
-          <input
-            type="text"
-            id="brand"
-            name="brand"
-            placeholder="e.g. Starbucks"
-            required
-          />
-        </div>
-        <div class="row">
-          <div class="field">
-            <label for="price">Price (₱)</label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              placeholder="0.00"
-              required
-            />
-          </div>
-          <div class="field">
-            <label for="quantity">Quantity</label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              placeholder="1"
-              required
-            />
-          </div>
-        </div>
-        <button type="submit">Add expense</button>
-      </form>
+    <!-- Floating car silhouettes -->
+    <div class="silhouette">🚗</div>
+    <div class="silhouette">🏎️</div>
 
-      <div class="footer">
-        <a href="/list">View all expenses →</a>
+    <!-- Logo -->
+    <a class="logo-mark" href="#">Die<em>Cast</em> Hub</a>
+
+    <!-- Ticker -->
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <span>Hot Wheels</span><span class="dot">◆</span> <span>Matchbox</span
+        ><span class="dot">◆</span> <span>1:18 Scale</span
+        ><span class="dot">◆</span> <span>Tomica</span
+        ><span class="dot">◆</span> <span>Maisto</span
+        ><span class="dot">◆</span> <span>Greenlight</span
+        ><span class="dot">◆</span> <span>Johnny Lightning</span
+        ><span class="dot">◆</span> <span>Auto World</span
+        ><span class="dot">◆</span>
+        <!-- duplicate for seamless loop -->
+        <span>Hot Wheels</span><span class="dot">◆</span> <span>Matchbox</span
+        ><span class="dot">◆</span> <span>1:18 Scale</span
+        ><span class="dot">◆</span> <span>Tomica</span
+        ><span class="dot">◆</span> <span>Maisto</span
+        ><span class="dot">◆</span> <span>Greenlight</span
+        ><span class="dot">◆</span> <span>Johnny Lightning</span
+        ><span class="dot">◆</span> <span>Auto World</span
+        ><span class="dot">◆</span>
       </div>
     </div>
+
+    <!-- Main content -->
+    <main class="stage">
+      <p class="eyebrow">
+        <span class="eyebrow-line"></span>
+        Welcome to the community
+        <span class="eyebrow-line"></span>
+      </p>
+
+      <h1 class="headline">
+        Your Collection<br />
+        <span>Deserves</span>
+        An Audience
+      </h1>
+
+      <p class="sub">
+        Share your <strong>diecast finds</strong>, discover rare models,<br />
+        and connect with collectors who get it.
+      </p>
+
+      <div class="cta-wrap">
+        <a href="/feed" class="btn-start">
+          Start Exploring
+          <span class="btn-arrow">▶</span>
+        </a>
+      </div>
+    </main>
+
+    <!-- Stats bar -->
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num">2.4K</span>
+        <span class="stat-label">Collectors</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">18K</span>
+        <span class="stat-label">Posts Shared</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">140+</span>
+        <span class="stat-label">Brands</span>
+      </div>
+    </div>
+
+    <script>
+      // Custom cursor follow
+      const cursor = document.getElementById("cursor");
+      const ring = document.getElementById("cursor-ring");
+      let mx = 0,
+        my = 0,
+        rx = 0,
+        ry = 0;
+
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cursor.style.left = mx + "px";
+        cursor.style.top = my + "px";
+      });
+
+      // Ring follows with a slight lag
+      (function animRing() {
+        rx += (mx - rx) * 0.14;
+        ry += (my - ry) * 0.14;
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        requestAnimationFrame(animRing);
+      })();
+
+      // Cursor grows on hover over the button
+      document
+        .querySelector(".btn-start")
+        .addEventListener("mouseenter", () => {
+          cursor.style.width = "20px";
+          cursor.style.height = "20px";
+          ring.style.borderColor = "rgba(230,57,70,0.9)";
+        });
+      document
+        .querySelector(".btn-start")
+        .addEventListener("mouseleave", () => {
+          cursor.style.width = "12px";
+          cursor.style.height = "12px";
+          ring.style.borderColor = "rgba(230,57,70,0.5)";
+        });
+    </script>
   </body>
 </html>

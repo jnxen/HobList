@@ -1,0 +1,46 @@
+<!-- templates/feed.html -->
+
+<!-- This "plugs into" base.html -->
+{% extends "base.html" %} {% block content %}
+
+<div class="feed-wrapper">
+  <!-- CREATE POST BOX (not functional yet — just UI) -->
+  <div class="create-post-box">
+    <img src="https://via.placeholder.com/40" alt="avatar" class="avatar" />
+    <input
+      type="text"
+      placeholder="Share your latest find..."
+      class="post-input"
+      disabled
+    />
+  </div>
+
+  <!-- FEED POSTS - Jinja2 loops through the posts list -->
+  {% for post in posts %}
+  <div class="post-card">
+    <!-- Post Header: avatar + username + timestamp -->
+    <div class="post-header">
+      <img src="https://via.placeholder.com/40" alt="avatar" class="avatar" />
+      <div>
+        <strong>{{ post.user }}</strong>
+        <span class="timestamp">{{ post.time }}</span>
+      </div>
+    </div>
+
+    <!-- Caption text -->
+    <p class="post-caption">{{ post.caption }}</p>
+
+    <!-- Post image (only shows if post has one) -->
+    {% if post.image %}
+    <img src="{{ post.image }}" alt="post image" class="post-image" />
+    {% endif %}
+
+    <!-- Like button + count -->
+    <div class="post-actions">
+      <button class="like-btn">❤️ {{ post.likes }} Likes</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
