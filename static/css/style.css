@@ -1,5 +1,20 @@
 /* static/css/style.css */
 
+/* ===== GOOGLE FONTS ===== */
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap");
+
+/* ===== CSS VARIABLES — single source of truth for colors ===== */
+:root {
+  --red: #e63946;
+  --dark: #0d0d0d;
+  --card: #161616;
+  --muted: #555555;
+  --white: #f5f5f5;
+  --accent: #ffd60a;
+  --border: #222222;
+  --hover: #1e1e1e;
+}
+
 /* ===== RESET & BASE ===== */
 * {
   margin: 0;
@@ -8,17 +23,17 @@
 }
 
 body {
-  background-color: #f0f2f5; /* Light gray — like Facebook's bg */
-  font-family: Arial, sans-serif;
-  color: #1c1e21;
+  background-color: var(--dark); /* Dark background like the landing page */
+  font-family: "DM Sans", sans-serif;
+  color: var(--white);
 }
 
 /* ===== NAVBAR ===== */
 .navbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #ddd;
+  background-color: var(--card); /* Slightly lighter dark card */
+  border-bottom: 1px solid var(--border);
   padding: 12px 0;
-  position: sticky; /* Stays at the top when scrolling */
+  position: sticky;
   top: 0;
   z-index: 100;
 }
@@ -33,21 +48,30 @@ body {
 }
 
 .logo {
-  font-size: 20px;
-  font-weight: bold;
+  font-family: "Bebas Neue", sans-serif; /* Landing page font */
+  font-size: 22px;
+  letter-spacing: 0.1em;
   text-decoration: none;
-  color: #e63946; /* Red — diecast/racing vibe */
+  color: var(--white);
+}
+
+/* The "Cast" part of DieCast in red — matches landing page logo style */
+.logo span {
+  color: var(--red);
 }
 
 .nav-links a {
   margin-left: 20px;
   text-decoration: none;
-  color: #555;
+  color: var(--muted);
   font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
-  color: #e63946;
+  color: var(--red);
 }
 
 /* ===== MAIN LAYOUT ===== */
@@ -56,40 +80,47 @@ body {
 }
 
 .feed-wrapper {
-  max-width: 600px; /* Facebook-like narrow feed */
+  max-width: 600px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between cards */
+  gap: 20px;
 }
 
 /* ===== CREATE POST BOX ===== */
 .create-post-box {
-  background: #fff;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .post-input {
   flex: 1;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 14px;
-  background: #f0f2f5;
+  font-family: "DM Sans", sans-serif;
+  background: var(--hover);
+  color: var(--muted);
   cursor: not-allowed;
 }
 
 /* ===== POST CARD ===== */
 .post-card {
-  background: #ffffff;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s ease;
+}
+
+.post-card:hover {
+  border-color: #333; /* Subtle lift on hover */
 }
 
 .post-header {
@@ -102,43 +133,63 @@ body {
 .avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%; /* Makes it circular */
+  border-radius: 50%;
+  border: 2px solid var(--border); /* Subtle ring around avatar */
 }
 
 .timestamp {
   font-size: 12px;
-  color: #888;
+  color: var(--muted);
   display: block;
 }
 
 .post-caption {
   padding: 0 16px 12px;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.6;
+  color: #ccc; /* Slightly dimmed — not pure white */
 }
 
 .post-image {
   width: 100%;
   display: block;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 /* ===== ACTIONS (Like button) ===== */
 .post-actions {
   padding: 10px 16px;
-  border-top: 1px solid #f0f2f5;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .like-btn {
   background: none;
-  border: none;
+  border: 1px solid var(--border);
   cursor: pointer;
-  font-size: 14px;
-  color: #555;
-  padding: 6px 12px;
+  font-size: 13px;
+  font-family: "DM Sans", sans-serif;
+  color: var(--muted);
+  padding: 6px 14px;
   border-radius: 6px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+  letter-spacing: 0.02em;
 }
 
 .like-btn:hover {
-  background: #f0f2f5;
-  color: #e63946;
+  background: rgba(230, 57, 70, 0.1); /* Red tint on hover */
+  color: var(--red);
+  border-color: var(--red);
+}
+
+/* ===== POST USERNAME ===== */
+.post-header strong {
+  color: var(--white);
+  font-weight: 500;
 }

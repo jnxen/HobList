@@ -2,7 +2,22 @@
 <html>
   <head>
     <title>Add Expense</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --red: #e63946;
+        --dark: #0d0d0d;
+        --card: #161616;
+        --muted: #555555;
+        --white: #f5f5f5;
+        --accent: #ffd60a;
+        --border: #222222;
+        --hover: #1e1e1e;
+      }
+
       * {
         box-sizing: border-box;
         margin: 0;
@@ -10,57 +25,102 @@
       }
 
       body {
-        font-family: system-ui, sans-serif;
-        background: #f5f5f3;
+        font-family: "DM Sans", sans-serif;
+        background: var(--dark);
         display: flex;
         justify-content: center;
         padding: 3rem 1rem;
-        color: #1a1a1a;
+        color: var(--white);
+
+        /* Same subtle grid texture as landing page */
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+          );
+        background-size: 60px 60px;
       }
 
       .card {
-        background: #fff;
-        border: 1px solid #e5e5e3;
+        background: var(--card);
+        border: 1px solid var(--border);
         border-radius: 12px;
         padding: 2rem;
         width: 100%;
         max-width: 420px;
+        /* Subtle red glow at the top edge */
+        box-shadow:
+          0 0 0 1px var(--border),
+          0 -2px 20px rgba(230, 57, 70, 0.08);
       }
 
-      h1 {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-      }
-      .subtitle {
-        font-size: 13px;
-        color: #888;
+      /* ── Header ── */
+      .card-header {
         margin-bottom: 1.75rem;
       }
 
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 28px;
+        font-weight: 400; /* Bebas Neue is already heavy */
+        letter-spacing: 0.08em;
+        color: var(--white);
+        margin-bottom: 0.2rem;
+      }
+
+      h1 span {
+        color: var(--red); /* Accent word in red — matches logo style */
+      }
+
+      .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 300;
+      }
+
+      /* ── Form fields ── */
       .field {
         display: flex;
         flex-direction: column;
         gap: 5px;
         margin-bottom: 1rem;
       }
+
       label {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 500;
-        color: #555;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase; /* Like the eyebrow labels on the landing */
       }
 
       input {
         width: 100%;
-        padding: 9px 12px;
+        padding: 10px 13px;
         font-size: 14px;
-        border: 1px solid #ddd;
+        font-family: "DM Sans", sans-serif;
+        background: var(--hover);
+        border: 1px solid var(--border);
         border-radius: 8px;
+        color: var(--white);
         outline: none;
-        transition: border-color 0.15s;
+        transition: border-color 0.15s ease;
       }
+
+      input::placeholder {
+        color: #3a3a3a;
+      }
+
       input:focus {
-        border-color: #888;
+        border-color: var(--red); /* Red focus ring — matches brand color */
+      }
+
+      /* Remove number input spinners (they look off on dark) */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
       }
 
       .row {
@@ -69,38 +129,91 @@
         gap: 12px;
       }
 
+      /* ── Submit button — matches landing page CTA style ── */
       button {
         width: 100%;
         margin-top: 0.5rem;
-        padding: 10px;
-        font-size: 15px;
-        font-weight: 500;
-        background: #1a1a1a;
-        color: #fff;
+        padding: 12px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.15em;
+        background: var(--red);
+        color: var(--white);
         border: none;
-        border-radius: 8px;
+        border-radius: 0; /* Flat edges — angular/racing feel */
+        clip-path: polygon(
+          0 0,
+          calc(100% - 10px) 0,
+          100% 10px,
+          100% 100%,
+          10px 100%,
+          0 calc(100% - 10px)
+        );
         cursor: pointer;
-      }
-      button:hover {
-        background: #333;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background 0.2s ease,
+          transform 0.15s ease;
       }
 
+      /* Shine sweep on hover — same as landing page CTA */
+      button::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          transparent 100%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.45s ease;
+      }
+
+      button:hover::before {
+        transform: translateX(100%);
+      }
+
+      button:hover {
+        background: #c1121f;
+        transform: translateY(-1px);
+      }
+
+      /* ── Divider ── */
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 1.5rem 0 1.25rem;
+      }
+
+      /* ── Footer link ── */
       .footer {
         text-align: center;
-        margin-top: 1.25rem;
         font-size: 13px;
-        color: #888;
+        color: var(--muted);
       }
+
       .footer a {
-        color: #1a1a1a;
+        color: var(--white);
+        text-decoration: none;
         text-underline-offset: 3px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .footer a:hover {
+        color: var(--red);
       }
     </style>
   </head>
   <body>
     <div class="card">
-      <h1>Add expense</h1>
-      <p class="subtitle">Track a new item to your expense list</p>
+      <div class="card-header">
+        <h1>Add <span>Expense</span></h1>
+        <p class="subtitle">Track a new item to your expense list</p>
+      </div>
 
       <form action="/add" method="POST">
         <div class="field">
@@ -113,6 +226,7 @@
             required
           />
         </div>
+
         <div class="field">
           <label for="brand">Brand</label>
           <input
@@ -123,6 +237,7 @@
             required
           />
         </div>
+
         <div class="row">
           <div class="field">
             <label for="price">Price (₱)</label>
@@ -131,6 +246,7 @@
               id="price"
               name="price"
               placeholder="0.00"
+              step="0.01"
               required
             />
           </div>
@@ -145,8 +261,11 @@
             />
           </div>
         </div>
-        <button type="submit">Add expense</button>
+
+        <button type="submit">Add Expense →</button>
       </form>
+
+      <div class="divider"></div>
 
       <div class="footer">
         <a href="/list">View all expenses →</a>

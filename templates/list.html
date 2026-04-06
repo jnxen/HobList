@@ -2,7 +2,22 @@
 <html>
   <head>
     <title>Expenses</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --red: #e63946;
+        --dark: #0d0d0d;
+        --card: #161616;
+        --muted: #555555;
+        --white: #f5f5f5;
+        --accent: #ffd60a;
+        --border: #222222;
+        --hover: #1e1e1e;
+      }
+
       * {
         box-sizing: border-box;
         margin: 0;
@@ -10,10 +25,18 @@
       }
 
       body {
-        font-family: system-ui, sans-serif;
-        background: #f5f5f3;
+        font-family: "DM Sans", sans-serif;
+        background: var(--dark);
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+          );
+        background-size: 60px 60px;
         padding: 3rem 1rem;
-        color: #1a1a1a;
+        color: var(--white);
       }
 
       .wrap {
@@ -21,49 +44,96 @@
         margin: 0 auto;
       }
 
+      /* ── Top header row ── */
       .top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.5rem;
-      }
-      .top h1 {
-        font-size: 18px;
-        font-weight: 600;
-      }
-      .top a {
-        font-size: 13px;
-        color: #555;
-        text-decoration: none;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 6px 12px;
-      }
-      .top a:hover {
-        background: #efefed;
+        margin-bottom: 1.75rem;
       }
 
+      .top h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: 0.08em;
+        color: var(--white);
+      }
+
+      .top h1 span {
+        color: var(--red);
+      }
+
+      .top a {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 15px;
+        letter-spacing: 0.12em;
+        color: var(--white);
+        text-decoration: none;
+        border: 1px solid var(--border);
+        border-radius: 0;
+        padding: 7px 16px;
+        background: var(--card);
+        clip-path: polygon(
+          0 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% 100%,
+          8px 100%,
+          0 calc(100% - 8px)
+        );
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .top a:hover {
+        background: var(--red);
+        border-color: var(--red);
+      }
+
+      /* ── Stat cards ── */
       .stats {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         margin-bottom: 1.5rem;
       }
+
       .stat {
-        background: #efefed;
+        background: var(--card);
+        border: 1px solid var(--border);
         border-radius: 8px;
-        padding: 12px 14px;
-      }
-      .stat-label {
-        font-size: 12px;
-        color: #888;
-        margin-bottom: 4px;
-      }
-      .stat-value {
-        font-size: 20px;
-        font-weight: 600;
+        padding: 14px 16px;
+        transition: border-color 0.2s ease;
       }
 
+      .stat:hover {
+        border-color: #333;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      .stat-value {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 26px;
+        font-weight: 400;
+        letter-spacing: 0.05em;
+        color: var(--white);
+      }
+
+      /* Highlight the total value in red accent */
+      .stat:last-child .stat-value {
+        color: var(--red);
+      }
+
+      /* ── Expense list rows ── */
       .list {
         display: flex;
         flex-direction: column;
@@ -75,27 +145,32 @@
         grid-template-columns: 1fr auto;
         align-items: center;
         gap: 12px;
-        background: #fff;
-        border: 1px solid #e5e5e3;
+        background: var(--card);
+        border: 1px solid var(--border);
         border-radius: 8px;
-        padding: 11px 14px;
+        padding: 12px 14px;
+        transition: border-color 0.2s ease;
       }
+
       .row:hover {
-        border-color: #ccc;
+        border-color: #333;
       }
 
       .row-left {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 3px;
       }
+
       .row-name {
         font-size: 14px;
         font-weight: 500;
+        color: var(--white);
       }
+
       .row-meta {
         font-size: 12px;
-        color: #888;
+        color: var(--muted);
       }
 
       .row-right {
@@ -103,64 +178,98 @@
         align-items: center;
         gap: 8px;
       }
+
       .row-amount {
-        font-size: 14px;
-        font-weight: 500;
-        min-width: 60px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 16px;
+        letter-spacing: 0.05em;
+        color: var(--accent); /* Yellow — stands out as a value */
+        min-width: 64px;
         text-align: right;
       }
+
       .divider {
         width: 1px;
         height: 16px;
-        background: #e5e5e3;
+        background: var(--border);
       }
 
+      /* ── Action buttons ── */
       .btn-action {
+        font-family: "DM Sans", sans-serif;
         font-size: 12px;
-        padding: 4px 10px;
+        font-weight: 500;
+        padding: 5px 11px;
         border-radius: 6px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--border);
         background: transparent;
-        color: #888;
+        color: var(--muted);
         cursor: pointer;
         white-space: nowrap;
-      }
-      .btn-action:hover {
-        background: #f5f5f3;
-        color: #1a1a1a;
-      }
-      .btn-action.danger:hover {
-        background: #fff0f0;
-        color: #c0392b;
-        border-color: #f5c6c6;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
       }
 
+      .btn-action:hover {
+        background: var(--hover);
+        color: var(--white);
+        border-color: #444;
+      }
+
+      /* Danger — delete/clear button */
+      .btn-action.danger:hover {
+        background: rgba(230, 57, 70, 0.12);
+        color: var(--red);
+        border-color: var(--red);
+      }
+
+      /* ── Footer: clear all ── */
       .footer {
         display: flex;
         justify-content: flex-end;
-        margin-top: 1rem;
+        margin-top: 1.25rem;
       }
+
       .btn-clear-all {
-        font-size: 13px;
-        padding: 7px 14px;
-        border-radius: 8px;
-        border: 1px solid #f5c6c6;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 15px;
+        letter-spacing: 0.12em;
+        padding: 8px 18px;
+        border: 1px solid var(--red);
+        border-radius: 0;
+        clip-path: polygon(
+          0 0,
+          calc(100% - 8px) 0,
+          100% 8px,
+          100% 100%,
+          8px 100%,
+          0 calc(100% - 8px)
+        );
         background: transparent;
-        color: #c0392b;
+        color: var(--red);
         cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
       }
+
       .btn-clear-all:hover {
-        background: #fff0f0;
+        background: var(--red);
+        color: var(--white);
       }
     </style>
   </head>
   <body>
     <div class="wrap">
+      <!-- Header -->
       <div class="top">
-        <h1>Expense list</h1>
-        <a href="/add_items">+ Add expense</a>
+        <h1>Expense <span>List</span></h1>
+        <a href="/add_items">+ Add Expense</a>
       </div>
 
+      <!-- Stats -->
       <div class="stats">
         <div class="stat">
           <div class="stat-label">Items</div>
@@ -176,6 +285,7 @@
         </div>
       </div>
 
+      <!-- List -->
       <div class="list">
         {% for item in items %}
         <div class="row">
@@ -199,10 +309,11 @@
         {% endfor %}
       </div>
 
+      <!-- Footer -->
       <div class="footer">
         <form action="/clear" method="POST">
           <button type="submit" class="btn-clear-all">
-            Clear all expenses
+            Clear All Expenses
           </button>
         </form>
       </div>
