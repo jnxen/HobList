@@ -2,7 +2,22 @@
 <html>
   <head>
     <title>Edit Expense</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --red: #e63946;
+        --dark: #0d0d0d;
+        --card: #161616;
+        --muted: #555555;
+        --white: #f5f5f5;
+        --accent: #ffd60a;
+        --border: #222222;
+        --hover: #1e1e1e;
+      }
+
       * {
         box-sizing: border-box;
         margin: 0;
@@ -10,57 +25,98 @@
       }
 
       body {
-        font-family: system-ui, sans-serif;
-        background: #f5f5f3;
+        font-family: "DM Sans", sans-serif;
+        background: var(--dark);
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+          );
+        background-size: 60px 60px;
         display: flex;
         justify-content: center;
         padding: 3rem 1rem;
-        color: #1a1a1a;
+        color: var(--white);
       }
 
       .card {
-        background: #fff;
-        border: 1px solid #e5e5e3;
+        background: var(--card);
+        border: 1px solid var(--border);
         border-radius: 12px;
         padding: 2rem;
         width: 100%;
         max-width: 420px;
+        box-shadow:
+          0 0 0 1px var(--border),
+          0 -2px 20px rgba(230, 57, 70, 0.08);
       }
 
-      h1 {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 0.2rem;
-      }
-      .subtitle {
-        font-size: 13px;
-        color: #888;
+      /* ── Header ── */
+      .card-header {
         margin-bottom: 1.75rem;
       }
 
+      h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 28px;
+        font-weight: 400;
+        letter-spacing: 0.08em;
+        color: var(--white);
+        margin-bottom: 0.2rem;
+      }
+
+      h1 span {
+        color: var(--red);
+      }
+
+      .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 300;
+      }
+
+      /* ── Fields ── */
       .field {
         display: flex;
         flex-direction: column;
         gap: 5px;
         margin-bottom: 1rem;
       }
+
       label {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 500;
-        color: #555;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       input {
         width: 100%;
-        padding: 9px 12px;
+        padding: 10px 13px;
         font-size: 14px;
-        border: 1px solid #ddd;
+        font-family: "DM Sans", sans-serif;
+        background: var(--hover);
+        border: 1px solid var(--border);
         border-radius: 8px;
+        color: var(--white);
         outline: none;
-        transition: border-color 0.15s;
+        transition: border-color 0.15s ease;
       }
+
+      input::placeholder {
+        color: #3a3a3a;
+      }
+
       input:focus {
-        border-color: #888;
+        border-color: var(--red);
+      }
+
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
       }
 
       .row {
@@ -69,48 +125,96 @@
         gap: 12px;
       }
 
+      /* ── Actions ── */
       .actions {
         display: flex;
         gap: 8px;
         margin-top: 0.75rem;
       }
 
+      /* Save — same clipped CTA as add expense & clear all */
       .btn-save {
         flex: 1;
-        padding: 10px;
-        font-size: 14px;
-        font-weight: 500;
-        background: #1a1a1a;
-        color: #fff;
+        padding: 12px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 18px;
+        letter-spacing: 0.15em;
+        background: var(--red);
+        color: var(--white);
         border: none;
-        border-radius: 8px;
+        border-radius: 0;
+        clip-path: polygon(
+          0 0,
+          calc(100% - 10px) 0,
+          100% 10px,
+          100% 100%,
+          10px 100%,
+          0 calc(100% - 10px)
+        );
         cursor: pointer;
-      }
-      .btn-save:hover {
-        background: #333;
+        position: relative;
+        overflow: hidden;
+        transition:
+          background 0.2s ease,
+          transform 0.15s ease;
       }
 
+      .btn-save::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          transparent 100%
+        );
+        transform: translateX(-100%);
+        transition: transform 0.45s ease;
+      }
+
+      .btn-save:hover::before {
+        transform: translateX(100%);
+      }
+
+      .btn-save:hover {
+        background: #c1121f;
+        transform: translateY(-1px);
+      }
+
+      /* Cancel — muted ghost button */
       .btn-cancel {
-        padding: 10px 16px;
+        padding: 10px 18px;
+        font-family: "DM Sans", sans-serif;
         font-size: 14px;
+        font-weight: 500;
+        border: 1px solid var(--border);
         border-radius: 8px;
-        border: 1px solid #ddd;
         background: transparent;
-        color: #888;
+        color: var(--muted);
         cursor: pointer;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
       }
+
       .btn-cancel:hover {
-        background: #f5f5f3;
+        background: var(--hover);
+        color: var(--white);
+        border-color: #444;
       }
     </style>
   </head>
   <body>
     <div class="card">
-      <h1>Edit expense</h1>
-      <p class="subtitle">Update the details for this item</p>
+      <div class="card-header">
+        <h1>Edit <span>Expense</span></h1>
+        <p class="subtitle">Update the details for this item</p>
+      </div>
 
       <form action="/update/{{ item['item_id'] }}" method="POST">
         <div class="field">
@@ -155,8 +259,9 @@
             />
           </div>
         </div>
+
         <div class="actions">
-          <button type="submit" class="btn-save">Save changes</button>
+          <button type="submit" class="btn-save">Save Changes →</button>
           <a href="/list" class="btn-cancel">Cancel</a>
         </div>
       </form>
