@@ -1,25 +1,36 @@
 from flask import Flask, render_template, request, redirect
-import json
+import sqlite3
 import uuid
 
 app = Flask(__name__)
 
-# Load data
+
+def init_db():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS items (
+        item_id TEXT PRIMARY KEY,
+        name TEXT,
+        brand TEXT,
+        price REAL,
+        quantity INTEGER,
+        amount REAL
+    )
+    """)
+
+    conn.commit()
+    conn.close()
 
 
-def load_data():
-    try:
-        with open("data.json", "r") as f:
-            return json.load(f)
-    except:
-        return []
-
-# Save data
+init_db()
 
 
-def save_data(data):
-    with open("data.json", "w") as f:
-        json.dump(data, f)
+def get_db():
+    conn = sqlite3.connect("database.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 # Home page (form)
@@ -74,11 +85,21 @@ def add():
 
     amount = price * quantity
 
-    data = load_data()
-    data.append({"item_id": str(uuid.uuid4()), "name": name,
-                 "brand": brand, "price": price, "quantity": quantity, "amount": amount})
-    save_data(data)
+    conn = get_db()
+    cursor = conn.cursor()
 
+    cursor.execute("""
+    INSERT INTO items (item_id, name, brand, price, quantity, amount)
+    VALUES (?, ?, ?, ?, ?, ?)
+""", (str(uuid.uuid4()),
+      name,
+      brand,
+      price,
+      quantity,
+      amount
+      ))
+    conn.commit()
+    conn.close()
     return redirect("/list")
 
 # delete function
@@ -86,58 +107,96 @@ def add():
 
 @app.route("/delete/<item_id>", methods=["POST"])
 def delete_item(item_id):
-    data = load_data()
-    data = [item for item in data if item["item_id"] != item_id]
-    save_data(data)
-    return redirect("/list")
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM items WHERE item_id = ?", (item_id,))
+
+    conn.commit()
+    conn.close()
 
 
 @app.route("/clear", methods=["POST"])
 def clear_data():
-    save_data([])
-    return redirect("/list")
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM items")
+
+    conn.commit()
+    conn.close()
+    return render_template("list.html")
 # Show list
 
 
 @app.route("/list")
 def list_items():
-    data = load_data()
-    total = sum(item["amount"] for item in data)
+    conn = get_db()
+    cursor = conn.cursor()
 
-    return render_template("list.html", items=data, total=total)
+    cursor.execute("SELECT * FROM items")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    items = [dict(row) for row in rows]
+    total = sum(item["amount"] for item in items)
+
+    return render_template("list.html", items=items, total=total)
 
 
 @app.route("/edit/<item_id>")
 def edit_item(item_id):
-    data = load_data()
-    item_to_edit = None
-    for item in data:
-        if item["item_id"] == item_id:
-            item_to_edit = item
-            break
-    return render_template("edit.html", item=item_to_edit)
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM items WHERE item_id =  ?",
+                   (item_id,)
+                   )
+    row = cursor.fetchone()
+    conn.close()
+    return render_template("edit.html", item=row)
 
 
 @app.route("/update/<item_id>", methods=["POST"])
 def update_item(item_id):
-    data = load_data()
-    for item in data:
-        if item['item_id'] == item_id:
-            item['name'] = request.form['name']
-            item['brand'] = request.form['brand']
-            quantity = int(request.form['quantity'])
-            price = float(request.form['price'])
-            item['price'] = price
-            if quantity > 0:
-                item['quantity'] += quantity
-                item['amount'] = price * item['quantity']
-            else:
-                item['quantity'] -= abs(quantity)
-                item['amount'] = price * item["quantity"]
 
-            break
+    name = request.form["name"]
+    brand = request.form["brand"]
+    quantity_input = int(request.form["quantity"])
+    price = float(request.form["price"])
 
-    save_data(data)
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Get current quantity first
+    cursor.execute("SELECT quantity FROM items WHERE item_id = ?", (item_id,))
+    row = cursor.fetchone()
+
+    current_quantity = row["quantity"]
+
+    # Apply your logic
+    if quantity_input > 0:
+        new_quantity = current_quantity + quantity_input
+    else:
+        new_quantity = current_quantity - abs(quantity_input)
+
+    new_amount = price * new_quantity
+
+    # Update DB
+    cursor.execute("""
+        UPDATE items
+        SET name = ?,
+            brand = ?,
+            price = ?,
+            quantity = ?,
+            amount = ?
+        WHERE item_id = ?
+    """, (name, brand, price, new_quantity, new_amount, item_id))
+
+    conn.commit()
+    conn.close()
+
     return redirect("/list")
 
 
