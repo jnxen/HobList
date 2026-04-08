@@ -31,8 +31,6 @@
         justify-content: center;
         padding: 3rem 1rem;
         color: var(--white);
-
-        /* Same subtle grid texture as landing page */
         background-image:
           linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
           linear-gradient(
@@ -42,7 +40,13 @@
           );
         background-size: 60px 60px;
       }
-
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover,
+      input:-webkit-autofill:focus {
+        -webkit-text-fill-color: var(--white);
+        -webkit-box-shadow: 0 0 0px 1000px var(--hover) inset;
+        transition: background-color 5000s ease-in-out 0s;
+      }
       .card {
         background: var(--card);
         border: 1px solid var(--border);
@@ -50,13 +54,11 @@
         padding: 2rem;
         width: 100%;
         max-width: 420px;
-        /* Subtle red glow at the top edge */
         box-shadow:
           0 0 0 1px var(--border),
           0 -2px 20px rgba(230, 57, 70, 0.08);
       }
 
-      /* ── Header ── */
       .card-header {
         margin-bottom: 1.75rem;
       }
@@ -64,14 +66,14 @@
       h1 {
         font-family: "Bebas Neue", sans-serif;
         font-size: 28px;
-        font-weight: 400; /* Bebas Neue is already heavy */
+        font-weight: 400;
         letter-spacing: 0.08em;
         color: var(--white);
         margin-bottom: 0.2rem;
       }
 
       h1 span {
-        color: var(--red); /* Accent word in red — matches logo style */
+        color: var(--red);
       }
 
       .subtitle {
@@ -80,7 +82,6 @@
         font-weight: 300;
       }
 
-      /* ── Form fields ── */
       .field {
         display: flex;
         flex-direction: column;
@@ -93,7 +94,7 @@
         font-weight: 500;
         color: var(--muted);
         letter-spacing: 0.08em;
-        text-transform: uppercase; /* Like the eyebrow labels on the landing */
+        text-transform: uppercase;
       }
 
       input {
@@ -112,12 +113,10 @@
       input::placeholder {
         color: #3a3a3a;
       }
-
       input:focus {
-        border-color: var(--red); /* Red focus ring — matches brand color */
+        border-color: var(--red);
       }
 
-      /* Remove number input spinners (they look off on dark) */
       input[type="number"]::-webkit-inner-spin-button,
       input[type="number"]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -129,8 +128,152 @@
         gap: 12px;
       }
 
-      /* ── Submit button — matches landing page CTA style ── */
-      button {
+      /* ── Dropdown ── */
+      .dropdown {
+        position: relative;
+      }
+
+      .dd-trigger {
+        width: 100%;
+        padding: 10px 13px;
+        font-size: 14px;
+        font-family: "DM Sans", sans-serif;
+        background: var(--hover);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--white);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        transition: border-color 0.15s;
+        user-select: none;
+      }
+
+      .dd-trigger:hover,
+      .dd-trigger.open {
+        border-color: var(--red);
+      }
+
+      .dd-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dd-placeholder {
+        color: #3a3a3a;
+      }
+
+      .dd-arrow {
+        font-size: 10px;
+        color: var(--muted);
+        transition: transform 0.2s;
+      }
+
+      .dd-trigger.open .dd-arrow {
+        transform: rotate(180deg);
+      }
+
+      .dd-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        overflow: hidden;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition:
+          opacity 0.15s,
+          transform 0.15s;
+      }
+
+      .dd-menu.open {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+
+      .dd-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 13px;
+        cursor: pointer;
+        transition: background 0.12s;
+        font-size: 14px;
+        color: #ccc;
+      }
+
+      .dd-item:hover {
+        background: #252525;
+        color: var(--white);
+      }
+      .dd-item.selected {
+        background: rgba(230, 57, 70, 0.08);
+        color: var(--white);
+      }
+
+      .dd-item .check {
+        font-size: 12px;
+        color: var(--red);
+        opacity: 0;
+        margin-left: auto;
+      }
+
+      .dd-item.selected .check {
+        opacity: 1;
+      }
+
+      /* ── Stepper ── */
+      .stepper {
+        display: flex;
+        align-items: center;
+        background: var(--hover);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        height: 40px;
+      }
+
+      .step-btn {
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        flex-shrink: 0;
+      }
+
+      .step-btn:hover {
+        background: #2a2a2a;
+        color: var(--white);
+      }
+
+      .step-val {
+        flex: 1;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--white);
+        user-select: none;
+      }
+
+      /* ── Submit button ── */
+      button.submit {
         width: 100%;
         margin-top: 0.5rem;
         padding: 12px;
@@ -140,7 +283,7 @@
         background: var(--red);
         color: var(--white);
         border: none;
-        border-radius: 0; /* Flat edges — angular/racing feel */
+        border-radius: 0;
         clip-path: polygon(
           0 0,
           calc(100% - 10px) 0,
@@ -157,8 +300,7 @@
           transform 0.15s ease;
       }
 
-      /* Shine sweep on hover — same as landing page CTA */
-      button::before {
+      button.submit::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -172,23 +314,20 @@
         transition: transform 0.45s ease;
       }
 
-      button:hover::before {
+      button.submit:hover::before {
         transform: translateX(100%);
       }
-
-      button:hover {
+      button.submit:hover {
         background: #c1121f;
         transform: translateY(-1px);
       }
 
-      /* ── Divider ── */
       .divider {
         height: 1px;
         background: var(--border);
         margin: 1.5rem 0 1.25rem;
       }
 
-      /* ── Footer link ── */
       .footer {
         text-align: center;
         font-size: 13px;
@@ -198,7 +337,6 @@
       .footer a {
         color: var(--white);
         text-decoration: none;
-        text-underline-offset: 3px;
         font-weight: 500;
         transition: color 0.2s ease;
       }
@@ -228,14 +366,70 @@
         </div>
 
         <div class="field">
-          <label for="brand">Brand</label>
-          <input
-            type="text"
-            id="brand"
-            name="brand"
-            placeholder="e.g. Starbucks"
-            required
-          />
+          <label>Category</label>
+          <div class="dropdown" id="dd">
+            <div class="dd-trigger" id="ddTrigger">
+              <div class="dd-left">
+                <span id="ddIcon">📂</span>
+                <span class="dd-placeholder" id="ddLabel"
+                  >Select a category</span
+                >
+              </div>
+              <span class="dd-arrow">▼</span>
+            </div>
+            <div class="dd-menu" id="ddMenu">
+              <div
+                class="dd-item"
+                data-val="food"
+                data-icon="🍔"
+                data-label="Food"
+              >
+                <span>🍔</span><span>Food</span><span class="check">✓</span>
+              </div>
+              <div
+                class="dd-item"
+                data-val="transport"
+                data-icon="🚌"
+                data-label="Transport"
+              >
+                <span>🚌</span><span>Transport</span
+                ><span class="check">✓</span>
+              </div>
+              <div
+                class="dd-item"
+                data-val="bills"
+                data-icon="💡"
+                data-label="Bills"
+              >
+                <span>💡</span><span>Bills</span><span class="check">✓</span>
+              </div>
+              <div
+                class="dd-item"
+                data-val="shopping"
+                data-icon="🛍️"
+                data-label="Shopping"
+              >
+                <span>🛍️</span><span>Shopping</span><span class="check">✓</span>
+              </div>
+              <div
+                class="dd-item"
+                data-val="health"
+                data-icon="💊"
+                data-label="Health"
+              >
+                <span>💊</span><span>Health</span><span class="check">✓</span>
+              </div>
+              <div
+                class="dd-item"
+                data-val="other"
+                data-icon="📦"
+                data-label="Other"
+              >
+                <span>📦</span><span>Other</span><span class="check">✓</span>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="brand" id="catVal" value="" />
         </div>
 
         <div class="row">
@@ -251,25 +445,73 @@
             />
           </div>
           <div class="field">
-            <label for="quantity">Quantity</label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              placeholder="1"
-              required
-            />
+            <label>Quantity</label>
+            <div class="stepper">
+              <button class="step-btn" id="minus" type="button">−</button>
+              <span class="step-val" id="qty">1</span>
+              <button class="step-btn" id="plus" type="button">+</button>
+            </div>
+            <input type="hidden" name="quantity" id="qtyVal" value="1" />
           </div>
         </div>
 
-        <button type="submit">Add Expense →</button>
+        <button class="submit" type="submit">Add Expense →</button>
       </form>
 
       <div class="divider"></div>
-
-      <div class="footer">
-        <a href="/list">View all expenses →</a>
-      </div>
+      <div class="footer"><a href="/list">View all expenses →</a></div>
     </div>
+
+    <script>
+      // Dropdown
+      const trigger = document.getElementById("ddTrigger");
+      const menu = document.getElementById("ddMenu");
+
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        trigger.classList.toggle("open");
+        menu.classList.toggle("open");
+      });
+
+      document.querySelectorAll(".dd-item").forEach((item) => {
+        item.addEventListener("click", () => {
+          document
+            .querySelectorAll(".dd-item")
+            .forEach((i) => i.classList.remove("selected"));
+          item.classList.add("selected");
+          document.getElementById("ddIcon").textContent = item.dataset.icon;
+          const label = document.getElementById("ddLabel");
+          label.textContent = item.dataset.label;
+          label.classList.remove("dd-placeholder");
+          document.getElementById("catVal").value = item.dataset.val;
+          trigger.classList.remove("open");
+          menu.classList.remove("open");
+        });
+      });
+
+      document.addEventListener("click", () => {
+        trigger.classList.remove("open");
+        menu.classList.remove("open");
+      });
+
+      // Stepper
+      let qty = 1;
+      const qtyDisplay = document.getElementById("qty");
+      const qtyInput = document.getElementById("qtyVal");
+
+      document.getElementById("plus").addEventListener("click", () => {
+        qty++;
+        qtyDisplay.textContent = qty;
+        qtyInput.value = qty;
+      });
+
+      document.getElementById("minus").addEventListener("click", () => {
+        if (qty > 1) {
+          qty--;
+          qtyDisplay.textContent = qty;
+          qtyInput.value = qty;
+        }
+      });
+    </script>
   </body>
 </html>

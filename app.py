@@ -161,8 +161,6 @@ def edit_item(item_id):
 @app.route("/update/<item_id>", methods=["POST"])
 def update_item(item_id):
 
-    name = request.form["name"]
-    brand = request.form["brand"]
     quantity_input = int(request.form["quantity"])
     price = float(request.form["price"])
 
@@ -186,13 +184,12 @@ def update_item(item_id):
     # Update DB
     cursor.execute("""
         UPDATE items
-        SET name = ?,
-            brand = ?,
+        SET 
             price = ?,
             quantity = ?,
             amount = ?
         WHERE item_id = ?
-    """, (name, brand, price, new_quantity, new_amount, item_id))
+    """, (price, new_quantity, new_amount, item_id))
 
     conn.commit()
     conn.close()
