@@ -14,6 +14,7 @@ def init_db():
         item_id TEXT PRIMARY KEY,
         name TEXT,
         brand TEXT,
+        ETA TEXT,
         price REAL,
         quantity INTEGER,
         amount REAL
@@ -80,6 +81,7 @@ def feed():
 def add():
     name = request.form["name"]
     brand = request.form["brand"]
+    ETA = request.form["ETA"]
     price = float(request.form["price"])
     quantity = int(request.form["quantity"])
 
@@ -89,11 +91,12 @@ def add():
     cursor = conn.cursor()
 
     cursor.execute("""
-    INSERT INTO items (item_id, name, brand, price, quantity, amount)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO items (item_id, name, brand, ETA, price, quantity, amount)
+    VALUES (?, ?, ?, ? , ?, ?, ?)
 """, (str(uuid.uuid4()),
       name,
       brand,
+      ETA,
       price,
       quantity,
       amount
@@ -114,6 +117,7 @@ def delete_item(item_id):
 
     conn.commit()
     conn.close()
+    return render_template("list.html")
 
 
 @app.route("/clear", methods=["POST"])

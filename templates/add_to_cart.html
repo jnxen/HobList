@@ -344,6 +344,18 @@
       .footer a:hover {
         color: var(--red);
       }
+      input[type="date"] {
+        color-scheme: dark;
+      }
+
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.4);
+        cursor: pointer;
+      }
+
+      input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        filter: invert(1);
+      }
     </style>
   </head>
   <body>
@@ -432,6 +444,10 @@
           <input type="hidden" name="brand" id="catVal" value="" />
         </div>
 
+        <div class="field">
+          <label for="name">Estimated Time of Arrival</label>
+          <input type="date" id="ETA" name="ETA" required />
+        </div>
         <div class="row">
           <div class="field">
             <label for="price">Price (₱)</label>
