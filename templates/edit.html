@@ -283,9 +283,11 @@
           <label>Brand</label>
           <div class="field-readonly">{{ item.brand }}</div>
         </div>
-        <div class="field">
-          <label> Estimated Time of Arrival </label>
-          <div class="field-readonly">{{ item.ETA }}</div>
+        <div>
+          <div class="field">
+            <label>Estimated Time of Arrival</label>
+            <input type="date" name="ETA" value="{{ item.ETA }}" required />
+          </div>
         </div>
 
         <div class="row">
@@ -306,12 +308,7 @@
               <span class="step-val" id="qty">0</span>
               <button class="step-btn" id="plus" type="button">+</button>
             </div>
-            <input
-              type="hidden"
-              name="quantity"
-              id="qtyVal"
-              value="{{ item.quantity }}"
-            />
+            <input type="hidden" name="quantity" id="qtyVal" value="0" />
           </div>
         </div>
 
