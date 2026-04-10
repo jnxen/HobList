@@ -464,10 +464,10 @@
             <label>Quantity</label>
             <div class="stepper">
               <button class="step-btn" id="minus" type="button">−</button>
-              <span class="step-val" id="qty">0</span>
+              <span class="step-val" id="qty">1</span>
               <button class="step-btn" id="plus" type="button">+</button>
             </div>
-            <input type="hidden" name="quantity" id="qtyVal" value="0" />
+            <input type="hidden" name="quantity" id="qtyVal" value="1" />
           </div>
         </div>
 
@@ -511,7 +511,7 @@
       });
 
       // Stepper
-      let qty = 0;
+      let qty = 1;
       const qtyDisplay = document.getElementById("qty");
       const qtyInput = document.getElementById("qtyVal");
 
@@ -522,7 +522,7 @@
       });
 
       document.getElementById("minus").addEventListener("click", () => {
-        if (qty > 0) {
+        if (qty > 1) {
           qty--;
           qtyDisplay.textContent = qty;
           qtyInput.value = qty;
