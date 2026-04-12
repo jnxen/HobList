@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
 import uuid
+from rss import save_rss
+from db import db_for_feed
 
 app = Flask(__name__)
+
+db_for_feed()
 
 
 def init_db():
@@ -35,34 +39,11 @@ def get_db():
 
 
 # Home page (form)
-posts = [
-    {
-        "user": "Carlos M.",
-        "caption": "Just picked up this 1:64 Hot Wheels Ferrari F40! The detail on the wheels is insane 🔥",
-        "image": "https://via.placeholder.com/500x300",
-        "likes": 24,
-        "time": "2 hours ago"
-    },
-    {
-        "user": "Ana R.",
-        "caption": "My 1:18 scale Lamborghini Countach finally arrived from Japan. Worth the wait!",
-        "image": "https://via.placeholder.com/500x300",
-        "likes": 47,
-        "time": "5 hours ago"
-    },
-    {
-        "user": "Marco D.",
-        "caption": "No image today, just sharing — found a vintage Matchbox Superfast at a flea market for $2!",
-        "image": None,   # No image for this post
-        "likes": 15,
-        "time": "Yesterday"
-    },
-]
 
 
 @app.route("/")
 def landing():
-    return render_template("index.html", posts=posts)
+    return render_template("index.html")
 
 # Add item
 
@@ -74,7 +55,20 @@ def add_items():
 
 @app.route("/feed")
 def feed():
-    return render_template("feed.html", posts=posts)
+    save_rss()
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT title, link, source, date
+    FROM feed
+    ORDER BY date DESC
+""")
+
+    items = cursor.fetchall()
+    conn.close()
+
+    return render_template("feed.html", items=items)
 
 
 @app.route("/add", methods=["POST"])
