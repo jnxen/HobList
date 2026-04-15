@@ -1,15 +1,241 @@
 {% extends "base.html" %} {% block content %}
 
-<h1>Diecast Feed</h1>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap"
+  rel="stylesheet"
+/>
 
-{% for item in items %}
-<div style="margin-bottom: 20px">
-  {% if item[5] %}
-  <img src="{{ item[5] }}" width="200" />
+<style>
+  :root {
+    --red: #e63946;
+    --dark: #0d0d0d;
+    --card: #161616;
+    --muted: #555555;
+    --white: #f5f5f5;
+    --accent: #ffd60a;
+    --border: #222222;
+    --hover: #1e1e1e;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--dark);
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    padding: 3rem 1rem;
+    color: var(--white);
+    min-height: 100vh;
+  }
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .main-content {
+    padding-top: 60px; /* pushes content below the fixed navbar */
+  }
+  .feed-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .feed-header {
+    margin-bottom: 2rem;
+  }
+
+  .feed-header h1 {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    margin-bottom: 0.2rem;
+  }
+
+  .feed-header h1 span {
+    color: var(--red);
+  }
+
+  .feed-header .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .feed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .feed-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 -2px 20px rgba(230, 57, 70, 0.06);
+    display: flex;
+    flex-direction: column;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .feed-card:hover {
+    border-color: #333;
+    transform: translateY(-2px);
+  }
+
+  .feed-card-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    background: #111;
+    display: block;
+  }
+
+  .feed-card-img-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2a2a2a;
+    font-size: 40px;
+  }
+
+  .feed-card-body {
+    padding: 1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.4rem;
+  }
+
+  .feed-card-meta {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .feed-card-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    line-height: 1.2;
+    flex: 1;
+  }
+
+  .feed-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 0.75rem;
+    padding: 9px 16px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    background: var(--red);
+    border: none;
+    border-radius: 0;
+    text-decoration: none;
+    clip-path: polygon(
+      0 0,
+      calc(100% - 8px) 0,
+      100% 8px,
+      100% 100%,
+      8px 100%,
+      0 calc(100% - 8px)
+    );
+    position: relative;
+    overflow: hidden;
+    transition:
+      background 0.2s ease,
+      transform 0.15s ease;
+    align-self: flex-start;
+  }
+
+  .feed-card-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.45s ease;
+  }
+
+  .feed-card-link:hover::before {
+    transform: translateX(100%);
+  }
+
+  .feed-card-link:hover {
+    background: #c1121f;
+    transform: translateY(-1px);
+  }
+
+  .feed-empty {
+    color: var(--muted);
+    font-size: 14px;
+    padding: 2rem 0;
+  }
+</style>
+
+<div class="feed-wrapper">
+  <div class="feed-header">
+    <h1>Diecast <span>Feed</span></h1>
+    <p class="subtitle">Latest listings from your tracked sources</p>
+  </div>
+
+  {% if items %}
+  <div class="feed-grid">
+    {% for item in items %}
+    <div class="feed-card">
+      {% if item[5] %}
+      <img class="feed-card-img" src="{{ item[5] }}" alt="{{ item[0] }}" />
+      {% else %}
+      <div class="feed-card-img-placeholder">🚗</div>
+      {% endif %}
+
+      <div class="feed-card-body">
+        <div class="feed-card-meta">
+          {{ item[2] }} &nbsp;·&nbsp; {{ item[3] }}
+        </div>
+        <div class="feed-card-title">{{ item[0] }}</div>
+        <a class="feed-card-link" href="{{ item[1] }}" target="_blank">
+          View Listing ↗
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="feed-empty">No listings found. Check back soon.</p>
   {% endif %}
-
-  <h3>{{ item[0] }}</h3>
-  <p>{{ item[2] }} | {{ item[3] }}</p>
-  <a href="{{ item[1] }}" target="_blank">View</a>
 </div>
-{% endfor %} {% endblock %}
+
+{% endblock %}
