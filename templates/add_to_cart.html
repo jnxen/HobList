@@ -229,6 +229,36 @@
   .dd-item.selected .check {
     opacity: 1;
   }
+  .seller-dd-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 13px;
+    cursor: pointer;
+    transition: background 0.12s;
+    font-size: 14px;
+    color: #ccc;
+  }
+
+  .seller-dd-item:hover {
+    background: #252525;
+    color: var(--white);
+  }
+  .seller-dd-item.selected {
+    background: rgba(230, 57, 70, 0.08);
+    color: var(--white);
+  }
+
+  .seller-dd-item .check {
+    font-size: 12px;
+    color: var(--red);
+    opacity: 0;
+    margin-left: auto;
+  }
+
+  .seller-dd-item.selected .check {
+    opacity: 1;
+  }
 
   /* ── Stepper ── */
   .stepper {
@@ -440,6 +470,65 @@
         </div>
         <input type="hidden" name="brand" id="catVal" value="" />
       </div>
+      <div class="field">
+        <label>Seller</label>
+        <div class="dropdown" id="ddSeller">
+          <div class="dd-trigger" id="ddSellerTrigger">
+            <div class="dd-left">
+              <span id="ddSellerIcon">🏪</span>
+              <span class="dd-placeholder" id="ddSellerLabel"
+                >Select a seller</span
+              >
+            </div>
+            <span class="dd-arrow">▼</span>
+          </div>
+          <div class="dd-menu" id="ddSellerMenu">
+            <div
+              class="seller-dd-item"
+              data-val="sm_supermarket"
+              data-icon="🏬"
+              data-label="SM Supermarket"
+            >
+              <span>🏬</span><span>SM Supermarket</span
+              ><span class="check">✓</span>
+            </div>
+            <div
+              class="seller-dd-item"
+              data-val="shopee"
+              data-icon="🛒"
+              data-label="Shopee"
+            >
+              <span>🛒</span><span>Shopee</span><span class="check">✓</span>
+            </div>
+            <div
+              class="seller-dd-item"
+              data-val="lazada"
+              data-icon="📦"
+              data-label="Lazada"
+            >
+              <span>📦</span><span>Lazada</span><span class="check">✓</span>
+            </div>
+            <div
+              class="seller-dd-item"
+              class="dd-item"
+              data-val="puregold"
+              data-icon="🏪"
+              data-label="Puregold"
+            >
+              <span>🏪</span><span>Puregold</span><span class="check">✓</span>
+            </div>
+            <div
+              class="seller-dd-item"
+              data-val="robinsons"
+              data-icon="🏢"
+              data-label="Robinsons"
+            >
+              <span>🏢</span><span>Robinsons</span><span class="check">✓</span>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="seller" id="sellerVal" value="" />
+      </div>
 
       <div class="field">
         <label for="ETA">Estimated Time of Arrival</label>
@@ -478,37 +567,95 @@
 </div>
 
 <script>
-  // Dropdown
+  // =======================
+  // ELEMENTS
+  // =======================
   const trigger = document.getElementById("ddTrigger");
   const menu = document.getElementById("ddMenu");
 
+  const sellerTrigger = document.getElementById("ddSellerTrigger");
+  const sellerMenu = document.getElementById("ddSellerMenu");
+
+  // =======================
+  // CATEGORY DROPDOWN
+  // =======================
   trigger.addEventListener("click", (e) => {
     e.stopPropagation();
+
+    // close seller dropdown when opening category
+    sellerTrigger.classList.remove("open");
+    sellerMenu.classList.remove("open");
+
     trigger.classList.toggle("open");
     menu.classList.toggle("open");
   });
 
-  document.querySelectorAll(".dd-item").forEach((item) => {
+  menu.querySelectorAll(".dd-item").forEach((item) => {
     item.addEventListener("click", () => {
-      document
+      menu
         .querySelectorAll(".dd-item")
         .forEach((i) => i.classList.remove("selected"));
+
       item.classList.add("selected");
+
       document.getElementById("ddIcon").textContent = item.dataset.icon;
+
       const label = document.getElementById("ddLabel");
       label.textContent = item.dataset.label;
       label.classList.remove("dd-placeholder");
+
       document.getElementById("catVal").value = item.dataset.val;
+
       trigger.classList.remove("open");
       menu.classList.remove("open");
     });
   });
 
+  // =======================
+  // SELLER DROPDOWN
+  // =======================
+  sellerTrigger.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    // close category dropdown when opening seller
+    trigger.classList.remove("open");
+    menu.classList.remove("open");
+
+    sellerTrigger.classList.toggle("open");
+    sellerMenu.classList.toggle("open");
+  });
+
+  sellerMenu.querySelectorAll(".seller-dd-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      sellerMenu
+        .querySelectorAll(".seller-dd-item")
+        .forEach((i) => i.classList.remove("selected"));
+
+      item.classList.add("selected");
+
+      document.getElementById("ddSellerIcon").textContent = item.dataset.icon;
+
+      const label = document.getElementById("ddSellerLabel");
+      label.textContent = item.dataset.label;
+      label.classList.remove("dd-placeholder");
+
+      document.getElementById("sellerVal").value = item.dataset.val;
+
+      sellerTrigger.classList.remove("open");
+      sellerMenu.classList.remove("open");
+    });
+  });
+
+  // =======================
+  // OUTSIDE CLICK (ONLY ONCE)
+  // =======================
   document.addEventListener("click", () => {
     trigger.classList.remove("open");
     menu.classList.remove("open");
-  });
 
+    sellerTrigger.classList.remove("open");
+    sellerMenu.classList.remove("open");
+  });
   // Stepper
   let qty = 1;
   const qtyDisplay = document.getElementById("qty");
