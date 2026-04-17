@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import uuid
 from rss import save_rss
@@ -18,6 +18,7 @@ def init_db():
         item_id TEXT PRIMARY KEY,
         name TEXT,
         brand TEXT,
+        seller TEXT,
         ETA TEXT,
         price REAL,
         quantity INTEGER,
@@ -75,6 +76,7 @@ def feed():
 def add():
     name = request.form["name"]
     brand = request.form["brand"]
+    seller = request.form["seller"]
     ETA = request.form["ETA"]
     price = float(request.form["price"])
     quantity = int(request.form["quantity"])
@@ -85,11 +87,12 @@ def add():
     cursor = conn.cursor()
 
     cursor.execute("""
-    INSERT INTO items (item_id, name, brand, ETA, price, quantity, amount)
-    VALUES (?, ?, ?, ? , ?, ?, ?)
+    INSERT INTO items (item_id, name, brand, seller, ETA, price, quantity, amount)
+    VALUES (?, ?, ?, ?, ? , ?, ?, ?)
 """, (str(uuid.uuid4()),
       name,
       brand,
+      seller,
       ETA,
       price,
       quantity,
@@ -111,7 +114,7 @@ def delete_item(item_id):
 
     conn.commit()
     conn.close()
-    return render_template("list.html")
+    return redirect(url_for("list_items"))
 
 
 @app.route("/clear", methods=["POST"])
